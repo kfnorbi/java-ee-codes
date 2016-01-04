@@ -1,0 +1,11 @@
+#binary files
+*.class
+
+#complete artifacts
+*.war
+*.jar
+
+#UI specific files
+.settings
+.project
+.classpath

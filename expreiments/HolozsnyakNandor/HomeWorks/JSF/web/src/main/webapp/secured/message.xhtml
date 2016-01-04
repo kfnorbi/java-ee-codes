@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/masterLayout.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+	<ui:define name="pageTitle">#{out.demo}</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<p:panel id="panel" header="Új üzenet">
+
+				<p:messages id="msgs" />
+
+				<h:panelGrid style="margin:auto;" columns="3" cellpadding="5">
+
+					<p:outputLabel style="width:50%;" for="targetUser"
+						value="#{out.msgTo}" />
+
+					<p:autoComplete id="targetUser" value="#{messageBean.targetUser}"
+						completeMethod="#{messageBean.searchUser}" required="true"
+						label="targetUser">
+
+						<p:ajax update="targetUserMsg" event="keyup" />
+					</p:autoComplete>
+
+					<p:message for="targetUser" display="icon" id="targetUserMsg" />
+
+					<p:outputLabel for="message" value="#{out.msg}" />
+					<p:inputTextarea rows="10" cols="30" id="message"
+						value="#{messageBean.message}" required="true" />
+				</h:panelGrid>
+
+				<p:commandButton style="width:25%;margin-left:37%;" value="#{out.send}"
+					update="panel" actionListener="#{messageBean.sendMessage}"
+					icon="ui-icon-check" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
