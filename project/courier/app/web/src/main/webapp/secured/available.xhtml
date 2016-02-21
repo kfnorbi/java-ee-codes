@@ -1,0 +1,183 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/masterLayout.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+	<ui:define name="pageTitle">#{out.pageTitle}</ui:define>
+	<ui:define name="content">
+		<style>
+.ui-datatable-header {
+	background: #3c8dbc;
+	color: white;
+}
+
+.ui-datagrid-content {
+	background: transparent;
+	border: none;
+}
+
+.datatable td {
+	background: white;
+}
+
+.datatable td {
+	font-size: 12px;
+}
+
+.ui-datatable thead th, .ui-datatable tfoot td {
+	text-align: center;
+	font-size: 13px;
+}
+
+.ui-datatable .ui-datatable-header, .ui-datatable .ui-datatable-footer {
+	text-align: center;
+	padding: 4px 11px;
+	font-size: 14px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	border: 1px solid #3c8dbc;
+	background: none;
+	font-weight: small;
+	color: #3f3731;
+	font-weight: normal;
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+	.ui-datatable tfoot th {
+	padding: 4px 10px;
+	overflow: hidden;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #3c8dbc;
+}
+
+.ui-corner-top {
+	-moz-border-radius-topleft: 3px;
+	-webkit-border-top-left-radius: 3px;
+	border-top-left-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-right-radius: 3px;
+}
+</style>
+		<section class="content">
+			<div class="row">
+				<div class="col-md-12">
+					<p:messages id="errorMessage" showDetail="true" autoUpdate="true"
+						closable="true" />
+					<p:dataGrid id="availableCargoes" var="cargo"
+						value="#{availableBean.cargoes}" columns="1">
+						<f:facet name="emptyMessage">
+
+							<h:outputText value="#{out.emptyMessage}"
+								class="callout callout-danger" />
+
+						</f:facet>
+
+						<div class="box box-primary collapsed-box">
+							<div class="box-header with-border">
+								<h2 class="box-title">#{out.company}
+									#{cargo.restaurant.name}</h2>
+								<h5 class="widget-user-desc">
+									#{out.cargoValue}
+									<h:outputText value="#{cargo.totalValue}">
+										<f:convertNumber minFractionDigits="2" />
+									</h:outputText>
+									HUF
+								</h5>
+								<h5 class="widget-user-desc">#{out.status} #{cargo.status}</h5>
+
+								<div class="box-tools pull-right">
+									<button class="btn btn-box-tool" data-widget="collapse">
+										<i class="fa fa-plus"></i>
+									</button>
+								</div>
+								<!-- /.box-tools -->
+							</div>
+							<!-- /.box-header -->
+
+							<div class="box-body">
+
+								<p:dataGrid var="address" value="#{cargo.addresses}" columns="1">
+									<div class="box box-primary box-solid collapsed-box">
+										<div class="box-header with-border">
+											<h5>#{out.address} #{address.address}</h5>
+											<h6>
+												#{out.deadline}
+												<h:outputText value="#{address.deadline}">
+													<f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm" />
+												</h:outputText>
+											</h6>
+											<div class="box-tools pull-right">
+												<button class="btn btn-box-tool" data-widget="collapse">
+													<i class="fa fa-plus"></i>
+												</button>
+											</div>
+										</div>
+										<div class="box-body">
+											<ul class="list-group list-group-unbordered">
+
+												<li class="list-group-item"><b>#{out.addressValue}</b>
+													<p class="pull-right">
+														<h:outputText value="#{address.totalValue}">
+															<f:convertNumber minFractionDigits="2" />
+														</h:outputText>
+														HUF
+													</p></li>
+												<li class="list-group-item"><b>#{out.payment}</b>
+													<p class="pull-right">#{out['paymentStatus.'.concat(address.payment)]}</p></li>
+											</ul>
+											<p:dataTable id="table" var="detail"
+												value="#{address.details}" styleClass="datatable">
+												<f:facet name="header">
+      												#{out.items}
+   												</f:facet>
+												<p:column headerText="#{out.item}">
+													<h:outputText value="#{detail.item.name}" />
+												</p:column>
+												<p:column headerText="#{out.price}">
+													<h:outputText value="#{detail.item.price}">
+														<f:convertNumber minFractionDigits="2" />
+													</h:outputText> HUF
+													</p:column>
+												<p:column headerText="#{out.quantity}">
+													<h:outputText value="#{detail.quantity}" />
+												</p:column>
+											</p:dataTable>
+
+										</div>
+									</div>
+								</p:dataGrid>
+
+							</div>
+							<h:form>
+
+								<div class="box-footer">
+
+									<h:commandButton value="#{out.map}"
+										action="#{availableBean.showOnMap(cargo.id)}"
+										class="btn btn-default"
+										disabled="#{availableBean.userVO.transporting > 0}">
+									</h:commandButton>
+									<h:commandButton value="#{out.pickUp}"
+										action="#{availableBean.pickUpCargo(cargo)}"
+										disabled="#{availableBean.userVO.transporting > 0}"
+										class="btn btn-success pull-right" update="errorMessage">
+									</h:commandButton>
+
+								</div>
+							</h:form>
+						</div>
+						<!-- /.box -->
+					</p:dataGrid>
+				</div>
+				<!-- /.box -->
+			</div>
+		</section>
+
+	</ui:define>
+</ui:composition>
